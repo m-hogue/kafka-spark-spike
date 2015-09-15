@@ -1,5 +1,8 @@
 package monkey.mikeyo.kafka;
 
+/**
+ * Arbitrary container for info
+ */
 public class BogusObject {
 
     private final String name;
