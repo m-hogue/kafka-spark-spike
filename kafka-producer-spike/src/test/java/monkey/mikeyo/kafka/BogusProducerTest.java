@@ -58,6 +58,7 @@ public class BogusProducerTest {
         // purely to block until the message has been delivered to topic & acked so that metrics are available.
         RecordMetadata metadata = metadataFuture.get();
 
+        System.out.println("Metrics:");
         Map<MetricName, ? extends Metric> metrics = producer.metrics();
         for(MetricName m : metrics.keySet()) {
             System.out.println(m.name() + " : " + metrics.get(m).value());
