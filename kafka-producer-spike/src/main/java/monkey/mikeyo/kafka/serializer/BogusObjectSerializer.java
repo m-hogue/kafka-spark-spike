@@ -1,4 +1,4 @@
-package monkey.mikeyo.kafka.encoder;
+package monkey.mikeyo.kafka.serializer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
