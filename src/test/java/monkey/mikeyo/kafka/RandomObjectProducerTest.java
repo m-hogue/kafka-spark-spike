@@ -9,26 +9,30 @@ import kafka.utils.ZKStringSerializer$;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.curator.test.TestingServer;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.Metric;
-import org.apache.kafka.common.MetricName;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class BogusProducerTest {
+import static org.junit.Assert.assertNotNull;
+
+/**
+ * Simple JUnit class that tests the {@link RandomObjectProducer} kafka producer
+ */
+public class RandomObjectProducerTest {
+
     private KafkaServerStartable kafkaServerStartable;
     private ZkClient zkClient;
+    private Random random;
 
     @Before
     public void setup() throws Exception {
         final TestingServer testingServer = new TestingServer(2181);
-
         // mock kafka
         final Properties props = new Properties();
         props.put("broker.id", "0");
@@ -45,27 +49,21 @@ public class BogusProducerTest {
         // create topic
         this.zkClient = new ZkClient(testingServer.getConnectString(), 30000, 30000, ZKStringSerializer$.MODULE$);
         AdminUtils.createTopic(this.zkClient, "bogus-topic", 10, 1, new Properties());
+
+        this.random = new Random();
     }
 
     @Test
     public void testProduce() throws ExecutionException, InterruptedException {
+        final Config config = ConfigFactory.load();
+        RandomObjectProducer producer = new RandomObjectProducer(config);
 
-        final Config config = ConfigFactory.parseFile(new File("kafka-producer-spike/src/test/resources/reference.conf"));
-        BogusProducer producer = new BogusProducer(config);
-
-        BogusObject object = new BogusObject("name", "message");
+        RandomObject object = new RandomObject("name", UUID.randomUUID().toString(), random.nextInt());
         Future<RecordMetadata> metadataFuture = producer.send(object);
         // purely to block until the message has been delivered to topic & acked so that metrics are available.
         RecordMetadata metadata = metadataFuture.get();
 
-        System.out.println("Metrics:");
-        Map<MetricName, ? extends Metric> metrics = producer.metrics();
-        for(MetricName m : metrics.keySet()) {
-            System.out.println(m.name() + " : " + metrics.get(m).value());
-        }
-
-        // I don't have a consumer implemented here, or i'd assert that the consumer was able to consume the message
-        // that i sent. Doesn't look like the metrics has anything useful to assert on.
+        assertNotNull(metadata);
 
         producer.close();
     }

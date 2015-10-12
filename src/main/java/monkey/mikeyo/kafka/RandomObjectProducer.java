@@ -1,11 +1,9 @@
 package monkey.mikeyo.kafka;
 
-
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigValue;
 import monkey.mikeyo.kafka.config.KafkaConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.Metric;
@@ -18,19 +16,18 @@ import java.util.concurrent.Future;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Basic producer to take send a BogusObject to a kafka queue
+ * A simple kafka producer that produces {@link RandomObject}s to a configured kafka topic.
  */
-public class BogusProducer {
-
-    private final Producer<String, BogusObject> producer;
+public class RandomObjectProducer {
+    private final KafkaProducer producer;
 
     private final Config config;
 
-    public BogusProducer(final Config config) {
+    public RandomObjectProducer(final Config config) {
         checkNotNull(config);
 
         final Config conf = config.getConfig("kafka.producers");
-        this.config = conf.getConfig("bogus-producer");
+        this.config = conf.getConfig("random-producer");
         final Config producerConfig = this.config.getConfig(KafkaConfig.PRODUCER_CONFIG.getKey());
 
         // flatten config keys
@@ -43,10 +40,10 @@ public class BogusProducer {
         this.producer = new KafkaProducer(props);
     }
 
-    public Future<RecordMetadata> send(final BogusObject object) {
+    public Future<RecordMetadata> send(final RandomObject object) {
         checkNotNull(object);
 
-        return this.producer.send(new ProducerRecord<String, BogusObject>(this.config.getString(KafkaConfig.TOPIC.getKey()), object));
+        return this.producer.send(new ProducerRecord<String, RandomObject>(this.config.getString(KafkaConfig.TOPIC.getKey()), object));
     }
 
     public Map<MetricName, ? extends Metric> metrics() {

@@ -1,10 +1,11 @@
-package monkey.mikeyo.kafka.config;
+package monkey.mikeyo.spark.config;
 
-public enum KafkaConfig {
+public enum SparkConfig {
+    MASTER,
 
-    TOPIC,
+    APP_NAME,
 
-    PRODUCER_CONFIG
+    CHECKPOINT_DIR
 
     ;
 

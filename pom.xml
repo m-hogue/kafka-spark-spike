@@ -4,20 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
-    <artifactId>kafka-spike</artifactId>
-    <packaging>pom</packaging>
+    <groupId>mikeyo</groupId>
+    <artifactId>kafka-spark-spike</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>kafka-producer-spike</module>
-    </modules>
 
     <properties>
         <kafka.version>0.8.2.1</kafka.version>
         <typesafe.config.version>1.2.1</typesafe.config.version>
         <guava.version>18.0</guava.version>
         <curator.version>2.9.0</curator.version>
-        <jackson.version>2.6.1</jackson.version>
+        <jackson.version>2.4.4</jackson.version>
+        <spark.version>1.5.1</spark.version>
     </properties>
 
     <dependencies>
@@ -46,6 +43,24 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-    </dependencies>
 
+        <!-- spark -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming-kafka_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+    </dependencies>
 </project>
